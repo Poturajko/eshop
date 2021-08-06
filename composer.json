@@ -1,0 +1,21 @@
+{
+    "name": "roman/mvc",
+    "authors": [
+        {
+            "name": "Poturajko",
+            "email": "poturajko@gmail.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+      "ext-pdo": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/"
+        }
+    },
+    "require-dev": {
+        "symfony/var-dumper": "^4.4"
+    }
+}
