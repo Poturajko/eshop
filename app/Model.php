@@ -1,15 +1,8 @@
 <?php
 
-
 namespace App;
 
-
-abstract class Model
+class Model
 {
-    protected object $db;
 
-    public function __construct()
-    {
-        $this->db = new Database();
-    }
 }
