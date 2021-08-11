@@ -17,7 +17,7 @@
                <h3><?=$product['name']?></h3>
                <p><?=$product['price']?></p>
                <p>
-               <form action="http://internet-shop.tmweb.ru/basket/add/2" method="POST">
+               <form action="/cart/add/<?=$product['id']?>" method="GET">
                   <button type="submit" class="btn btn-primary" role="button">В корзину</button>
                   <a href="http://internet-shop.tmweb.ru/mobiles/iphone_x_256"
                      class="btn btn-default"

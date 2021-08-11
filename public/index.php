@@ -1,15 +1,38 @@
 <?php
-ini_set('display_errors', 0);
-error_reporting(E_ALL);
+ini_set('display_errors', 1);
+error_reporting(E_WARNING);
+error_reporting(E_ERROR);
 
+use App\Controllers\AuthController;
+use App\Controllers\CartController;
+use App\Controllers\MainController;
+use App\Core\Application;
 use DevCoder\DotEnv;
-
-session_start();
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
 (new DotEnv(__DIR__ . '/../.env'))->load();
-
 $container = require __DIR__ . '/../bootstrap/container.php';
 
-require __DIR__ . '/../routes/web.php';
+$app = $container->get(Application::class);
+
+$app->router->get('/login', [AuthController::class, 'login']);
+$app->router->post('/login', [AuthController::class, 'login']);
+$app->router->get('/register', [AuthController::class, 'register']);
+$app->router->post('/register', [AuthController::class, 'register']);
+$app->router->get('/logout', [AuthController::class, 'logout']);
+
+
+$app->router->get('/', [MainController::class, 'index']);
+$app->router->get('/categories', [MainController::class, 'categories']);
+
+$app->router->get('/cart/add/{id}', [CartController::class, 'cartAdd']);
+$app->router->get('/cart/remove/{id}', [CartController::class, 'cartRemove']);
+$app->router->get('/cart', [CartController::class, 'cart']);
+$app->router->get('/checkout', [CartController::class, 'checkout']);
+$app->router->post('/checkout', [CartController::class, 'checkout']);
+
+$app->router->get('/{code}', [MainController::class, 'category']);
+$app->router->get('/{code}/{code}', [MainController::class, 'product']);
+
+$app->run();

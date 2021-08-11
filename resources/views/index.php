@@ -1,3 +1,6 @@
+<?php
+$this->title = 'Главная'
+?>
 <h1>Все товары</h1>
 <form method="GET" action="http://internet-shop.tmweb.ru">
    <div class="filters row">
@@ -23,6 +26,7 @@
          <button type="submit" class="btn btn-primary">Фильтр</button>
          <a href="http://internet-shop.tmweb.ru" class="btn btn-warning">Сброс</a>
       </div>
+
    </div>
 </form>
 <div class="row">
@@ -40,11 +44,9 @@
                 <h3><?=$product['name']?></h3>
                 <p><?=$product['price']?></p>
                 <p>
-                <form action="http://internet-shop.tmweb.ru/basket/add/2" method="POST">
+                <form action="/cart/add/<?= $product['id'] ?>" method="GET">
                    <button type="submit" class="btn btn-primary" role="button">В корзину</button>
-                   <a href="http://internet-shop.tmweb.ru/mobiles/iphone_x_256"
-                      class="btn btn-default"
-                      role="button">Подробнее</a>
+                   <a href="#" class="btn btn-default" role="button">Подробнее</a>
                 </form>
                 </p>
              </div>
