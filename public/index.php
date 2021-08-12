@@ -12,10 +12,10 @@ use DevCoder\DotEnv;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-(new DotEnv(__DIR__ . '/../.env'))->load();
-
 $container = require __DIR__ . '/../bootstrap/container.php';
-$container->get('const');
+$const = $container->get('const');
+
+(new DotEnv(ENV))->load();
 
 $app = $container->get(Application::class);
 
