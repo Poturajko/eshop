@@ -3,6 +3,7 @@ ini_set('display_errors', 1);
 error_reporting(E_WARNING);
 error_reporting(E_ERROR);
 
+use App\Controllers\Admin\CategoryController;
 use App\Controllers\AuthController;
 use App\Controllers\CartController;
 use App\Controllers\MainController;
@@ -12,7 +13,9 @@ use DevCoder\DotEnv;
 require_once __DIR__ . '/../vendor/autoload.php';
 
 (new DotEnv(__DIR__ . '/../.env'))->load();
+
 $container = require __DIR__ . '/../bootstrap/container.php';
+$container->get('const');
 
 $app = $container->get(Application::class);
 
@@ -22,6 +25,9 @@ $app->router->get('/register', [AuthController::class, 'register']);
 $app->router->post('/register', [AuthController::class, 'register']);
 $app->router->get('/logout', [AuthController::class, 'logout']);
 
+$app->router->get('/admin', [CategoryController::class, 'index']);
+$app->router->post('/admin/category', [CategoryController::class, 'store']);
+$app->router->get('/admin/category/create', [CategoryController::class, 'create']);
 
 $app->router->get('/', [MainController::class, 'index']);
 $app->router->get('/categories', [MainController::class, 'categories']);
