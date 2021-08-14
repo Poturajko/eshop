@@ -28,6 +28,8 @@ $app->router->get('/logout', [AuthController::class, 'logout']);
 $app->router->get('/admin', [CategoryController::class, 'index']);
 $app->router->post('/admin/category', [CategoryController::class, 'store']);
 $app->router->get('/admin/category/create', [CategoryController::class, 'create']);
+$app->router->get('/admin/category/{id}', [CategoryController::class, 'show']);
+
 
 $app->router->get('/', [MainController::class, 'index']);
 $app->router->get('/categories', [MainController::class, 'categories']);
@@ -39,6 +41,6 @@ $app->router->get('/checkout', [CartController::class, 'checkout']);
 $app->router->post('/checkout', [CartController::class, 'checkout']);
 
 $app->router->get('/{code}', [MainController::class, 'category']);
-$app->router->get('/{code}/{code}', [MainController::class, 'product']);
+$app->router->get('/{code}/{productId}', [MainController::class, 'product']);
 
 $app->run();
