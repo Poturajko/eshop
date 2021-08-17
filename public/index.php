@@ -47,7 +47,7 @@ $app->router->get('/admin/orders', [OrderController::class, 'index']);
 $app->router->get('/admin/orders/{order}', [OrderController::class, 'show']);
 
 $app->router->get('/', [MainController::class, 'index']);
-$app->router->get('/categories', [MainController::class, 'show']);
+$app->router->get('/categories', [MainController::class, 'categories']);
 
 $app->router->get('/cart/add/{id}', [CartController::class, 'cartAdd']);
 $app->router->get('/cart/remove/{id}', [CartController::class, 'cartRemove']);
