@@ -1,5 +1,6 @@
 <?php
 $this->title = 'Ошибка'
+/** @var $exception \Exception */
 ?>
 
-<h1>404 Not Found</h1>
+<h3><?= $exception->getCode()?> - <?= $exception->getMessage()?></h3>

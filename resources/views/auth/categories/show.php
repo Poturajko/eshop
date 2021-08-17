@@ -1,8 +1,7 @@
-@extends('auth.layouts.master')
+<?php
+$this->title = 'Категория ' . $category->id
+?>
 
-@section('title', 'Категория ' . $category->name)
-
-@section('content')
     <div class="col-md-12">
         <h1>Категория Бытовая техника</h1>
         <table class="table">
@@ -17,30 +16,28 @@
             </tr>
             <tr>
                 <td>ID</td>
-                <td>{{ $category->id }}</td>
+                <td><?=$category->id?></td>
             </tr>
             <tr>
                 <td>Код</td>
-                <td>{{ $category->code }}</td>
+                <td><?=$category->code?></td>
             </tr>
             <tr>
                 <td>Название</td>
-                <td>{{ $category->name }}</td>
+                <td><?=$category->name?></td>
             </tr>
             <tr>
                 <td>Описание</td>
-                <td>{{ $category->description }}</td>
+                <td><?=$category->description?></td>
             </tr>
             <tr>
                 <td>Картинка</td>
-                <td><img src="{{\Illuminate\Support\Facades\Storage::url($category->image)}}"
-                         height="240px"></td>
+                <td><img src="#" height="240px"></td>
             </tr>
             <tr>
                 <td>Кол-во товаров</td>
-                <td>{{ $category->products->count() }}</td>
+                <td><?=count($category->products())?></td>
             </tr>
             </tbody>
         </table>
     </div>
-@endsection

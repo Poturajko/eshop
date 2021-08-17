@@ -1,20 +1,25 @@
 <?php
 
-namespace App;
+namespace App\Core;
 
-use function Composer\Autoload\includeFile;
+
+use App\Core\Database\Connection;
+use App\Models\User;
+use Exception;
+use PDO;
 
 class Application
 {
     public static Application $app;
-    public string $layout = 'master';
+    public static $layouts = 'main';
+    public ?Controller $controller;
     public Router $router;
     public Request $request;
     public Response $response;
     public View $view;
     public Session $session;
-    public Database $db;
-    public ?array $user;
+    public PDO $db;
+    public ?User $user;
     public $userClass;
 
     public function __construct($userClass)
@@ -26,24 +31,30 @@ class Application
         $this->router = new Router($this->request, $this->response);
         $this->view = new View();
         $this->session = new Session();
-        $this->db = new Database();
-        $this->userClass = $userClass;
+        $this->db = Connection::connect();
 
+        $this->userClass = $userClass;
         $userId = $this->session->get('user');
         if ($userId) {
-            $this->user = $this->userClass->findOne(['id' => $userId]);
+            $this->user = $this->userClass->where('id', $userId)->first();
         }
     }
 
     public function run(): void
     {
-        $this->router->resolve();
+        try {
+            $this->router->resolve();
+        } catch (Exception $exception) {
+            $this->response->setStatusCode((int)$exception->getCode());
+            echo $this->view->renderView(self::$layouts, 'errors/error', compact('exception'));
+        }
+
     }
 
-    public function login(array $user): bool
+    public function login(User $user): bool
     {
         $this->user = $user;
-        $this->session->set('user', $user['id']);
+        $this->session->set('user', $user->id);
 
         return true;
     }
@@ -68,6 +79,21 @@ class Application
 
     public static function isAdmin()
     {
-        return self::$app->user['is_admin'];
+        return self::$app->user->is_admin;
+    }
+
+    public static function routeActive(string $actionName): bool
+    {
+        foreach (Application::$app->controller as $item) {
+            if ($actionName === $item) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static function cartIsEmpty()
+    {
+        return empty(self::$app->session->get('cart'));
     }
 }

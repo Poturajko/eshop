@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App;
+namespace App\Core;
 
 
 class View
@@ -12,7 +12,7 @@ class View
     {
         extract($params, EXTR_OVERWRITE);
         ob_start();
-        require __DIR__ . "/../resources/views/$view.php";
+        require __DIR__ . "/../../resources/views/$view.php";
         return ob_get_clean();
     }
 
@@ -20,7 +20,7 @@ class View
     {
         $viewContent = $this->renderOnlyView($view, $params);
         ob_start();
-        include_once __DIR__ ."/../resources/views/layouts/$layoutName.php";
+        include_once __DIR__ ."/../../resources/views/layouts/$layoutName.php";
         $layoutContent = ob_get_clean();
         return str_replace('{{content}}', $viewContent, $layoutContent);
     }

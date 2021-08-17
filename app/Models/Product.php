@@ -4,21 +4,54 @@
 namespace App\Models;
 
 
-class Product extends \App\Model
+use App\Core\Application;
+use App\Core\BaseModel;
+
+class Product extends BaseModel
 {
-    private string $table = 'products';
+    public string $id;
+    public string $name;
+    public string $code;
+    public string $category_id;
+    public string $price;
+    public string $description;
+    public ?string $image;
 
-    public function getProducts(): ?array
+    public function primaryKey(): string
     {
-        return $this->db->rows('SELECT * FROM ' . $this->table);
+        return 'id';
     }
 
-    public function getProductsByCategoryId(string $categoryId): ?array
+    public function foreignKey(): string
     {
-        $params = [
-            'category_id' => $categoryId,
+        return 'category_id';
+    }
+
+    public function foreignPivotKey(): string
+    {
+        return 'product_id';
+    }
+
+    public function attributes(): array
+    {
+        return [
+            'id','name','code', 'category_id','price','description','image'
         ];
-
-        return $this->db->rows('SELECT * FROM ' . $this->table . ' WHERE category_id = :category_id',$params);
     }
+
+    public function rules(): array
+    {
+        return [];
+    }
+
+    public function tableName(): string
+    {
+        return 'products';
+    }
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
+
 }

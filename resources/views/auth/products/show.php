@@ -1,10 +1,8 @@
-@extends('auth.layouts.master')
-
-@section('title', 'Продукт ' . $product->name)
-
-@section('content')
+<?php
+$this->title = 'Продукт ' . $product->name;
+?>
     <div class="col-md-12">
-        <h1>{{ $product->name }}</h1>
+        <h1><?=$product->name ?></h1>
         <table class="table">
             <tbody>
             <tr>
@@ -17,29 +15,28 @@
             </tr>
             <tr>
                 <td>ID</td>
-                <td>{{ $product->id}}</td>
+                <td><?=$product->id ?></td>
             </tr>
             <tr>
                 <td>Код</td>
-                <td>{{ $product->code }}</td>
+                <td><?=$product->code ?></td>
             </tr>
             <tr>
                 <td>Название</td>
-                <td>{{ $product->name }}</td>
+                <td><?=$product->name ?></td>
             </tr>
             <tr>
                 <td>Описание</td>
-                <td>{{ $product->description }}</td>
+                <td><?=$product->description ?></td>
             </tr>
             <tr>
                 <td>Картинка</td>
-                <td><img src="{{ \Illuminate\Support\Facades\Storage::url($product->image) }}" height="240px"></td>
+                <td><img src="#" height="240px"></td>
             </tr>
             <tr>
                 <td>Категория</td>
-                <td>{{ $product->category->name }}</td>
+                <td><?= $product->category()->name ?></td>
             </tr>
             </tbody>
         </table>
     </div>
-@endsection

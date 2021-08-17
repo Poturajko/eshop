@@ -7,26 +7,27 @@ namespace App\Core\Database;
 use http\Exception\InvalidArgumentException;
 use PDO;
 use PDOException;
+use PDOStatement;
 
-class Database
+class Connection
 {
-    private PDO $db;
+    private static PDO $db;
 
-    public function __construct(string $dsn, string $userName = null, string $password = null)
+    public static function connect()
     {
         try {
-            $this->db = new PDO(getenv('DATABASE_DSN'), getenv('DATABASE_USERNAME'), getenv('DATABASE_PASSWORD'));
-            $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            $this->db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+            self::$db = new PDO(getenv('DATABASE_DSN'), getenv('DATABASE_USERNAME'), getenv('DATABASE_PASSWORD'));
+            self::$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            self::$db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
             throw new InvalidArgumentException($e->getMessage());
         }
+        return self::$db;
     }
 
-    public function getDb(): PDO
+    public static function getDb(): PDO
     {
-        return $this->db;
+        return self::$db;
     }
-
 
 }

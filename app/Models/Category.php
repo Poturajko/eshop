@@ -4,21 +4,44 @@
 namespace App\Models;
 
 
-class Category extends \App\Model
+use App\Core\BaseModel;
+
+class Category extends BaseModel
 {
-    private string $table = 'categories';
+    public string $id = '';
+    public string $code = '';
+    public string $name = '';
+    public string $description = '';
+    public ?string $image = '';
 
-    public function getCategories(): ?array
+    public function primaryKey(): string
     {
-        return $this->db->rows('SELECT * FROM ' . $this->table);
+        return 'id';
     }
 
-    public function getCategoryByCode(string $code): ?array
+    public function rules(): array
     {
-        $params = [
-            'code' => $code,
+        return [];
+    }
+
+    public function attributes(): array
+    {
+        return [
+            'id',
+            'code',
+            'name',
+            'description',
+            'image'
         ];
-        return $this->db->row('SELECT * FROM ' . $this->table . ' WHERE code = :code', $params);
     }
 
+    public function tableName(): string
+    {
+        return 'categories';
+    }
+
+    public function products()
+    {
+        return $this->hasMany(Product::class);
+    }
 }

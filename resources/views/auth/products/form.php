@@ -1,35 +1,31 @@
-@extends('auth.layouts.master')
+<?php
+(isset($product))
+    ? $this->title = 'Редактировать товар ' . $product->name
+    : $this->title = 'Создать товар';
+?>
 
-@isset($product)
-    @section('title', 'Редактировать товар ' . $product->name)
-@else
-    @section('title', 'Создать товар')
-@endisset
 
-@section('content')
     <div class="col-md-12">
-        @isset($product)
-            <h1>Редактировать товар <b>{{ $product->name }}</b></h1>
-        @else
-            <h1>Добавить товар</h1>
-        @endisset
-        <form method="POST" enctype="multipart/form-data"
-              @isset($product)
-              action="{{ route('products.update', $product) }}"
-              @else
-              action="{{ route('products.store') }}"
-            @endisset
-        >
-            <div>
-                @isset($product)
-                    @method('PUT')
-                @endisset
-                @csrf
+
+
+        <?php
+        echo (isset($product))
+            ? '<h1>Редактировать товар <b>' . $product->name . '</b></h1>'
+            : '<h1>Добавить товар</h1>';
+        ?>
+
+       <form method="POST" enctype="multipart/form-data"
+           <?php
+           echo (isset($product))
+               ? "action='/admin/product/$product->id'"
+               : "action='/admin/product'";
+           ?>
+       >
                 <div class="input-group row">
                     <label for="code" class="col-sm-2 col-form-label">Код: </label>
                     <div class="col-sm-6">
                         <input type="text" class="form-control" name="code" id="code"
-                               value="{{@old('code', isset($product) ? $product->code : null)}}">
+                               value="<?=$product->code?>">
                     </div>
                 </div>
                 <br>
@@ -37,7 +33,7 @@
                     <label for="name" class="col-sm-2 col-form-label">Название: </label>
                     <div class="col-sm-6">
                         <input type="text" class="form-control" name="name" id="name"
-                               value="{{@old('code', isset($product) ? $product->name : null)}}">
+                               value="<?=$product->name?>">
                     </div>
                 </div>
                 <br>
@@ -45,15 +41,18 @@
                     <label for="category_id" class="col-sm-2 col-form-label">Категория: </label>
                     <div class="col-sm-6">
                         <select name="category_id" id="category_id" class="form-control">
-                            @foreach($categories as $category)
-                                <option value="{{ $category->id }}"
-                                        @isset($product)
-                                        @if($product->category_id == $category->id)
-                                        selected
-                                    @endif
-                                    @endisset
-                                >{{ $category->name }}</option>
-                            @endforeach
+                            <?php foreach($categories as $category): ?>
+                                <option value="<?=$category->id?>"
+
+                                        <?php if (isset($product)):?>
+
+                                        <?php if ($product->category_id == $category->id):?>
+                                             <?= 'selected' ?>
+                                       <?php endif; ?>
+                                       <?php endif; ?>
+
+                                ><?=$category->name?></option>
+                            <?php endforeach; ?>
                         </select>
                     </div>
                 </div>
@@ -61,9 +60,7 @@
                 <div class="input-group row">
                     <label for="description" class="col-sm-2 col-form-label">Описание: </label>
                     <div class="col-sm-6">
-								<textarea name="description" id="description" cols="72"
-                                          rows="7">{{@old('code', isset($product) ? $product->description : null)}}
-                                </textarea>
+								<textarea name="description" id="description" cols="72"rows="7"> <?=$product->description?> </textarea>
                     </div>
                 </div>
                 <br>
@@ -80,11 +77,10 @@
                     <label for="price" class="col-sm-2 col-form-label">Цена: </label>
                     <div class="col-sm-2">
                         <input type="text" class="form-control" name="price" id="price"
-                               value="{{@old('code', isset($product) ? $product->price : null)}}">
+                               value="<?=$product->price?>">
                     </div>
                 </div>
                 <button class="btn btn-success">Сохранить</button>
             </div>
         </form>
     </div>
-@endsection

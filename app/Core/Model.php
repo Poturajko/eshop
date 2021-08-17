@@ -1,8 +1,8 @@
 <?php
 
-namespace App;
+namespace App\Core;
 
-abstract class Model implements IModel
+abstract class Model
 {
     public const RULE_REQUIRED = 'required';
     public const RULE_EMAIL = 'email';
@@ -44,11 +44,13 @@ abstract class Model implements IModel
                     $this->addError($attribute,'Поле должно совпадать с полем пароль');
                 }
                 if ($ruleName === self::RULE_UNIQUE) {
-                    $className = $rule['class'];
+                    $className = new $rule['class'];
                     $uniqueAttribute = $rule['attribute'] ?? $attribute;
-                    $tableName = $className::tableName();
-                    $record = Application::$app->db->row("SELECT * FROM $tableName WHERE $uniqueAttribute = :$uniqueAttribute",
-                        [$uniqueAttribute => $value]);
+                    $tableName = $className->tableName();
+                    $stmt = Application::$app->db->prepare("SELECT * FROM $tableName WHERE $uniqueAttribute = :$uniqueAttribute");
+                    $stmt->bindValue(":$uniqueAttribute", $value);
+                    $stmt->execute();
+                    $record = $stmt->fetch();
                     if ($record){
                         $this->addError($attribute,'Такая запись уже существует');
                     }
@@ -64,9 +66,9 @@ abstract class Model implements IModel
         $this->errors[$attribute][] = $message;
     }
 
-    public function hasError(string $attribute):? bool
+    public function hasError(string $attribute)
     {
-        return $this->errors[$attribute];
+        return $this->errors[$attribute] ?? false;
     }
 
     public function getFirstError(string $attribute):string
@@ -74,4 +76,5 @@ abstract class Model implements IModel
         $errors = $this->errors[$attribute] ?? [];
         return $errors[0] ?? '';
     }
+
 }
