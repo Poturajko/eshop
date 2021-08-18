@@ -14,11 +14,6 @@ use App\Models\Product;
 
 class CartController extends Controller
 {
-    public function __construct()
-    {
-        $this->registerMiddleware(new CartMiddleware(['cart', 'checkout']));
-    }
-
     public function cart()
     {
         $idsArray = array_keys(Application::$app->session->get('cart'));

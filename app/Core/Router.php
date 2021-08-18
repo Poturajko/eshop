@@ -2,28 +2,33 @@
 
 namespace App\Core;
 
+use App\Controllers\MainController;
 use App\Core\Exception\NotFoundException;
+use App\Core\Middleware\CartIsEmpty;
+use App\Core\Middleware\MiddlewareStack;
 
 class Router
 {
     public Response $response;
     public Request $request;
-    protected array $routeMap = [];
+    public MiddlewareStack $middleware;
 
-    public function __construct(Request $request, Response $response)
+    public array $routeMap = [];
+
+    public function __construct(Request $request, Response $response, MiddlewareStack $middleware)
     {
         $this->request = $request;
         $this->response = $response;
+        $this->middleware = $middleware;
     }
 
-    public function get(string $path, array $callback)
+    public function get(string $path, array $callback): void
     {
         $this->routeMap['GET'][$path] = $callback;
     }
 
-    public function post(string $path, array $callback)
+    public function post(string $path, array $callback): void
     {
-
         $this->routeMap['POST'][$path] = $callback;
     }
 
@@ -54,14 +59,10 @@ class Router
         }
 
         if ($callback) {
-            /** @var \App\Core\Controller $controller */
             $controller = new $callback[0]();
             Application::$app->controller = $controller;
             $controller->action = $callback[1];
-
-            foreach ($controller->getMiddlewares() as $middleware) {
-                $middleware->execute();
-            }
+            $this->middleware->handle($this->request, $this->response);
             $callback[0] = $controller;
         }
 

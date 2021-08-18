@@ -3,7 +3,6 @@
 namespace App\Controllers\Admin;
 
 use App\Core\Controller;
-use App\Core\Middleware\CheckIsAdminMiddleware;
 use App\Core\Request;
 use App\Core\Response;
 use App\Core\Storage;
@@ -11,12 +10,6 @@ use App\Models\Category;
 
 class CategoryController extends Controller
 {
-
-    public function __construct()
-    {
-        $this->registerMiddleware(new CheckIsAdminMiddleware(['index','create','store','show','edit','update','destroy']));
-    }
-
     public function index()
     {
         $categories = (new Category())->all();

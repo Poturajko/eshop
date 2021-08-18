@@ -4,6 +4,8 @@ namespace App\Core;
 
 
 use App\Core\Database\Connection;
+use App\Core\Middleware\MiddlewareInterface;
+use App\Core\Middleware\MiddlewareStack;
 use App\Models\User;
 use Exception;
 use PDO;
@@ -22,13 +24,16 @@ class Application
     public ?User $user;
     public $userClass;
 
+    public MiddlewareStack $middleware;
+
     public function __construct($userClass)
     {
         $this->user = null;
         self::$app = $this;
+        $this->middleware = new MiddlewareStack();
         $this->response = new Response();
         $this->request = new Request();
-        $this->router = new Router($this->request, $this->response);
+        $this->router = new Router($this->request, $this->response, $this->middleware);
         $this->view = new View();
         $this->session = new Session();
         $this->db = Connection::connect();
@@ -37,6 +42,14 @@ class Application
         $userId = $this->session->get('user');
         if ($userId) {
             $this->user = $this->userClass->where('id', $userId)->first();
+        }
+    }
+
+    public function addMiddleware(string $middleware)
+    {
+        if (class_exists($middleware)){
+            $instance = new $middleware();
+            $this->middleware->add($instance);
         }
     }
 
