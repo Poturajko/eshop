@@ -52,7 +52,7 @@
                  <?php if (\App\Core\Application::isAdmin()): ?>
                    <li><a href="/admin/orders">Панель администратора</a></li>
                  <?php else: ?>
-                   <li><a href="/orders">Мои заказы</a></li>
+                   <li><a href="/user/orders">Мои заказы</a></li>
                  <?php endif; ?>
                 <li><a href="/logout">Выйти</a></li>
              <?php endif; ?>

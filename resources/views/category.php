@@ -22,7 +22,7 @@ $this->title = $category->name
                <p>
                <form action="/cart/add/<?=$product->id?>" method="GET">
                   <button type="submit" class="btn btn-primary" role="button">В корзину</button>
-                  <a href="http://internet-shop.tmweb.ru/mobiles/iphone_x_256"
+                  <a href="/<?=$category->code?>/<?=$product->code?>"
                      class="btn btn-default"
                      role="button">Подробнее</a>
                </form>

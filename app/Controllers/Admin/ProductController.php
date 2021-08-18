@@ -29,6 +29,7 @@ class ProductController extends Controller
     {
         $product = new Product();
         if ($request->isPost()) {
+
             $params = $request->getBody();
             unset($params['image']);
             if ($request->has('image')) {
@@ -58,9 +59,8 @@ class ProductController extends Controller
 
     public function update(Request $request, Response $response, int $id)
     {
-        $product = (new Product())->where('id', $id)->first();
-
         if ($request->isPost()) {
+            $product = (new Product())->where('id', $id)->first();
             $params = $request->getBody();
             unset($params['image']);
             if ($product->validate()) {
@@ -77,8 +77,10 @@ class ProductController extends Controller
 
     public function destroy(Request $request, Response $response, int $id)
     {
-        $product = (new Product())->where('id', $id)->first();
-        $product->delete();
+        if ($request->isPost()){
+            $product = (new Product())->where('id', $id)->first();
+            $product->delete();
+        }
 
         $response->redirect('/admin/product');
     }

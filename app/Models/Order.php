@@ -10,6 +10,7 @@ class Order extends BaseModel
 {
     public string $id = '';
     public string $name = '';
+    public string $user_id = '';
     public string $phone = '';
     public string $email = '';
     public string $status = '';
@@ -40,7 +41,7 @@ class Order extends BaseModel
 
     public function attributes(): array
     {
-        return ['id','name', 'phone', 'email', 'status'];
+        return ['id', 'user_id', 'name', 'phone', 'email', 'status'];
     }
 
     public function tableName(): string
@@ -56,6 +57,9 @@ class Order extends BaseModel
     public function saveOrder(): bool
     {
         $this->status = 1;
+        if (Application::auth() !== null) {
+            $this->user_id = Application::$app->user->id;
+        }
         $orderId = $this->create();
         foreach (Application::$app->session->get('cart') as $productId => $qnt) {
             $params = ['order_id' => $orderId, 'product_id' => $productId, 'count' => $qnt];

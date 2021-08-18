@@ -17,8 +17,8 @@
        <form method="POST" enctype="multipart/form-data"
            <?php
            echo (isset($product))
-               ? "action='/admin/product/$product->id'"
-               : "action='/admin/product'";
+               ? "action='/admin/products/$product->id'"
+               : "action='/admin/products'";
            ?>
        >
                 <div class="input-group row">

@@ -4,9 +4,7 @@
 namespace App\Controllers;
 
 
-use App\Core\Application;
 use App\Core\Controller;
-use App\Core\Exception\NotFoundException;
 use App\Core\Request;
 use App\Core\Response;
 use App\Models\Category;
@@ -18,25 +16,27 @@ class MainController extends Controller
     {
         $products = (new Product())->all();
 
-        $this->render($this->layout, 'index', compact('products'));
+        $this->render('master', 'index', compact('products'));
     }
 
     public function categories()
     {
         $categories = (new Category())->all();
 
-        $this->render($this->layout, 'categories', compact('categories'));
+        $this->render('master', 'categories', compact('categories'));
     }
 
-    public function category(Request $request,Response $response, $code)
+    public function category(Request $request, Response $response, $code)
     {
-        $category = (new Category())->where('code',$code)->first();
+        $category = (new Category())->where('code', $code)->first();
 
-        $this->render($this->layout, 'category', compact('category'));
+        $this->render('master', 'category', compact('category'));
     }
 
-    public function product($category, $product = null)
+    public function product(Request $request, Response $response, $categoryCode, $productCode)
     {
-        //
+        $product = (new Product())->where('code', $productCode)->first();
+
+        $this->render('master', 'product', compact('product'));
     }
 }

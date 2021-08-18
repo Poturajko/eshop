@@ -6,7 +6,6 @@ namespace App\Core;
 
 class Controller
 {
-    public string $layout = 'master';
     public string $action = '';
 
     public function render($layout, $view, $params = []):void

@@ -49,8 +49,9 @@ class Router
                 }
 
                 if (preg_match("%^{$internalRoute}$%", $requestPath, $matches) === 1) {
-                    if ($requestMethod === $method && $requestPath === $matches[0]) {
-                        $params = explode('/', $matches[1]);
+                    $internalPath = array_shift($matches);
+                    if ($requestMethod === $method && $requestPath === $internalPath) {
+                        $params = $matches;
                         $callback = $handler;
                         break;
                     }

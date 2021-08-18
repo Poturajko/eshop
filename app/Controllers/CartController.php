@@ -19,7 +19,7 @@ class CartController extends Controller
         $idsArray = array_keys(Application::$app->session->get('cart'));
         $products = (new Product())->whereIn('id', $idsArray)->get();
 
-        $this->render($this->layout, 'cart', compact('products'));
+        $this->render('master', 'cart', compact('products'));
     }
 
     public function cartAdd(Request $request, Response $response, $id)
@@ -53,10 +53,10 @@ class CartController extends Controller
                 $response->redirect('/');
             }
 
-            $this->render($this->layout, 'checkout', compact('order'));
+            $this->render('master', 'checkout', compact('order'));
         }
 
-        $this->render($this->layout, 'checkout', compact('order'));
+        $this->render('master', 'checkout', compact('order'));
     }
 
 }

@@ -42,7 +42,7 @@ $this->title = 'Заказы';
                                <?php if (\App\Core\Application::isAdmin()): ?>
                                href="/admin/orders/<?=$order->id?>"
                                <?php else: ?>
-                               href="/person/orders/show/<?=$order->id?>"
+                               href="/user/orders/<?=$order->id?>"
                                 <?php endif; ?>
                             >Открыть</a>
                         </div>

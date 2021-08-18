@@ -50,6 +50,9 @@ $app->router->post('/admin/products/delete/{id}', [ProductController::class, 'de
 $app->router->get('/admin/orders', [OrderController::class, 'index']);
 $app->router->get('/admin/orders/{order}', [OrderController::class, 'show']);
 
+$app->router->get('/user/orders', [\App\Controllers\User\OrderController::class, 'index']);
+$app->router->get('/user/orders/{order}', [\App\Controllers\User\OrderController::class, 'show']);
+
 $app->router->get('/', [MainController::class, 'index']);
 $app->router->get('/categories', [MainController::class, 'categories']);
 
@@ -59,7 +62,7 @@ $app->router->get('/cart', [CartController::class, 'cart']);
 $app->router->get('/checkout', [CartController::class, 'checkout']);
 $app->router->post('/checkout', [CartController::class, 'checkout']);
 
-$app->router->get('/{code}', [MainController::class, 'category']);
 $app->router->get('/{code}/{productId}', [MainController::class, 'product']);
+$app->router->get('/{code}', [MainController::class, 'category']);
 
 $app->run();

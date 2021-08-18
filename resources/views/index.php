@@ -45,7 +45,7 @@ $this->title = 'Главная'
                 <p>
                 <form action="/cart/add/<?= $product->id ?>" method="GET">
                    <button type="submit" class="btn btn-primary" role="button">В корзину</button>
-                   <a href="#" class="btn btn-default" role="button">Подробнее</a>
+                   <a href="/<?= $product->category()->code?>/<?=$product->code?>" class="btn btn-default" role="button">Подробнее</a>
                 </form>
                 </p>
              </div>
