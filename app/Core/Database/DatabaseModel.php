@@ -9,13 +9,17 @@ use PDOStatement;
 
 class DatabaseModel extends Model
 {
+    public const SHOW_BY_DEFAULT = 6;
+
     private array $params;
     private string $sql;
 
     public string $base;
     public array $where;
     public string $whereIn;
-    public array $type = [];
+    public string $type;
+    public string $limit;
+    public string $offset;
 
     public QueryBuilder $builder;
 
@@ -51,6 +55,23 @@ class DatabaseModel extends Model
     {
         return Application::$app->db->lastInsertId() ?: null;
     }
+
+    public function count(): ?int
+    {
+        $this->sql = $this->builder->select('COUNT(*) as count', $this->tableName())->getSQL();
+
+        return $this->query($this->sql)->fetchColumn() ?: null;
+    }
+
+    public function paginate(int $limit = self::SHOW_BY_DEFAULT)
+    {
+        $page = Application::$app->request->getBody()['page'] ?: 1;
+        $offset = ($page - 1) * $limit;
+        $sql = $this->builder->select($this->attributes(), $this->tableName())->limit($limit)->offset($offset)->getSQL();
+
+        return $this->query($sql)->fetchAll(PDO::FETCH_CLASS,static::class);
+    }
+
 
     public function all(): ?array
     {
@@ -97,13 +118,6 @@ class DatabaseModel extends Model
         return $stmt->rowCount() > 0;
     }
 
-    public function save(string $tableName, $fields, array $params): bool
-    {
-        $this->sql = $this->builder->insert($tableName, $fields)->getSQL();
-
-        return $this->query($this->sql, $params)->rowCount() > 0;
-    }
-
     public function update(array $fields = []): bool
     {
         $attr = $this->attributes();
@@ -126,7 +140,7 @@ class DatabaseModel extends Model
         $attr = [];
         if (!$fields) {
             foreach ($this->attributes() as $key => $attribute) {
-                if ($this->{$attribute}){
+                if ($this->{$attribute}) {
                     $params[$attribute] = $this->{$attribute};
                     $attr[$key] = $attribute;
                 }

@@ -12,9 +12,22 @@ $this->title = $category->name
 
       <div class="col-sm-6 col-md-4">
          <div class="thumbnail">
-            <div class="labels">
 
+            <div class="labels">
+                <?php if($product->isNew()): ?>
+
+                   <span class="badge badge-success">Новинка</span>
+                <?php endif; ?>
+
+                <?php if($product->isRecommend()): ?>
+                   <span class="badge badge-warning">Рекомендуем</span>
+                <?php endif; ?>
+
+                <?php if($product->isHit()): ?>
+                   <span class="badge badge-danger">Хит продаж</span>
+                <?php endif; ?>
             </div>
+
             <img src="http://internet-shop.tmweb.ru/storage/products/iphone_x_silver.jpg" alt="iPhone X 256GB">
             <div class="caption">
                <h3><?=$product->name?></h3>

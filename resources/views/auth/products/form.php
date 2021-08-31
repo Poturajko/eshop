@@ -80,6 +80,20 @@
                                value="<?=$product->price?>">
                     </div>
                 </div>
+          <br>
+          <?php foreach(['hit' => 'Хит продаж','new'=> 'Новинка','recommend'=>'Рекомендуемые'] as $field => $title): ?>
+          <div class="form-group row">
+             <label for="code" class="col-sm-2 col-form-label"> <?= $title ?> </label>
+             <div class="col-sm-6">
+                <input type="checkbox" class="form-control" name="<?= $field ?>" id="<?= $field ?>"
+                       <?php if(isset($product) && $product->{$field} == 1): ?>
+                checked="checked"
+                <?php endif; ?>
+                >
+             </div>
+          </div>
+          <br>
+          <?php endforeach; ?>
                 <button class="btn btn-success">Сохранить</button>
             </div>
         </form>

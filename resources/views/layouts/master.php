@@ -27,16 +27,16 @@
                <a href="/categories">Категории</a></li>
             <li <?php echo (\App\Core\Application::routeActive('cart')) ? 'class="active"' : '' ?> >
                <a href="/cart">В корзину</a></li>
-            <li><a href="http://internet-shop.tmweb.ru/reset">Сбросить проект в начальное состояние</a></li>
-            <li><a href="http://internet-shop.tmweb.ru/locale/en">en</a></li>
+            <li><a href="#">Сбросить проект в начальное состояние</a></li>
+            <li><a href="#">en</a></li>
 
             <li class="dropdown">
                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-                  aria-expanded="false">₽<span class="caret"></span></a>
+                  aria-expanded="false">₴<span class="caret"></span></a>
                <ul class="dropdown-menu">
-                  <li><a href="http://internet-shop.tmweb.ru/currency/RUB">₽</a></li>
-                  <li><a href="http://internet-shop.tmweb.ru/currency/USD">$</a></li>
-                  <li><a href="http://internet-shop.tmweb.ru/currency/EUR">€</a></li>
+                  <li><a href="#">₴</a></li>
+                  <li><a href="#">$</a></li>
+                  <li><a href="#">€</a></li>
                </ul>
             </li>
          </ul>

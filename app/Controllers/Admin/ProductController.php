@@ -36,8 +36,13 @@ class ProductController extends Controller
                 $path = $request->file('image')->store('products');
                 $params['image'] = $path;
             }
+            if ($request->has(['hit','recommend', 'new'])){
+                foreach (['hit','recommend', 'new'] as $item) {
+                    $params[$item] =  $params[$item] ? 1 : 0;
+                }
+            }
             $product->create($params);
-            $response->redirect('/admin/product');
+            $response->redirect('/admin/products');
         }
     }
 
@@ -69,8 +74,13 @@ class ProductController extends Controller
                     $path = $request->file('image')->store('products');
                     $params['image'] = $path;
                 }
+                if ($request->has(['hit','recommend', 'new'])){
+                    foreach (['hit','recommend', 'new'] as $item) {
+                        $params[$item] =  $params[$item] ? 1 : 0;
+                    }
+                }
                 $product->update($params);
-                $response->redirect('/admin/product');
+                $response->redirect('/admin/products');
             }
         }
     }
@@ -82,6 +92,6 @@ class ProductController extends Controller
             $product->delete();
         }
 
-        $response->redirect('/admin/product');
+        $response->redirect('/admin/products');
     }
 }

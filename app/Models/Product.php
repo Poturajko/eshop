@@ -6,6 +6,7 @@ namespace App\Models;
 
 use App\Core\Application;
 use App\Core\BaseModel;
+use App\Core\Model;
 
 class Product extends BaseModel
 {
@@ -16,6 +17,9 @@ class Product extends BaseModel
     public string $price;
     public string $description;
     public ?string $image;
+    public bool $hit;
+    public bool $new;
+    public bool $recommend;
 
     public function primaryKey(): string
     {
@@ -35,7 +39,7 @@ class Product extends BaseModel
     public function attributes(): array
     {
         return [
-            'id','name','code', 'category_id','price','description','image'
+            'id','name','code', 'category_id','price','description','image','hit','new','recommend'
         ];
     }
 
@@ -54,4 +58,18 @@ class Product extends BaseModel
         return $this->belongsTo(Category::class);
     }
 
+    public function isHit()
+    {
+        return $this->hit == 1;
+    }
+
+    public function isNew()
+    {
+        return $this->new == 1;
+    }
+
+    public function isRecommend()
+    {
+        return $this->recommend == 1;
+    }
 }

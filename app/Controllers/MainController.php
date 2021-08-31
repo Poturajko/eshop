@@ -5,6 +5,9 @@ namespace App\Controllers;
 
 
 use App\Core\Controller;
+use App\Core\Database\DatabaseModel;
+use App\Core\Model;
+use App\Core\Pagination;
 use App\Core\Request;
 use App\Core\Response;
 use App\Models\Category;
@@ -12,11 +15,13 @@ use App\Models\Product;
 
 class MainController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $products = (new Product())->all();
+        $product = new Product();
+        $products = $product->paginate();
+        $pagination = new Pagination($product->count(),DatabaseModel::SHOW_BY_DEFAULT);
 
-        $this->render('master', 'index', compact('products'));
+        $this->render('master', 'index', compact('products', 'pagination'));
     }
 
     public function categories()

@@ -16,11 +16,11 @@ class QueryBuilder
     public function update(string $tableName, $fields)
     {
         $this->reset();
-        if (is_array($fields)){
+        if (is_array($fields)) {
             $fields = implode(', ', array_map(fn($attr) => "$attr = :$attr", $fields));
         }
         $this->query->base = 'UPDATE ' . $tableName . ' SET ' . $fields;
-        $this->query->type[] = 'update';
+        $this->query->type = 'update';
 
         return $this;
     }
@@ -28,11 +28,11 @@ class QueryBuilder
     public function insert(string $tableName, $fields)
     {
         $this->reset();
-        if (is_array($fields)){
+        if (is_array($fields)) {
             $fields = implode(', ', array_map(fn($attr) => "$attr = :$attr", $fields));
         }
         $this->query->base = 'INSERT INTO ' . $tableName . ' SET ' . $fields;
-        $this->query->type[] = 'insert';
+        $this->query->type = 'insert';
 
         return $this;
     }
@@ -41,7 +41,7 @@ class QueryBuilder
     {
         $this->reset();
         $this->query->base = 'DELETE FROM ' . $tableName;
-        $this->query->type[] = 'delete';
+        $this->query->type = 'delete';
 
         return $this;
     }
@@ -53,19 +53,19 @@ class QueryBuilder
             $attributes = implode(', ', $attributes);
         }
         $this->query->base = 'SELECT ' . $attributes . ' FROM ' . $tableName;
-        $this->query->type[] = 'select';
+        $this->query->type = 'select';
 
         return $this;
     }
 
     public function where(string $key, string $operator = '=', string $value = ''): self
     {
-        if ($this->checkType()) {
+        if (!in_array($this->query->type, ['select', 'update', 'delete'])) {
             throw new Exception("WHERE can only be added to SELECT, UPDATE OR DELETE");
         }
-        if ($value){
+        if ($value) {
             $this->query->where [] = "$key $operator :$value";
-        }else{
+        } else {
             $this->query->where [] = "$key $operator :$key";
         }
 
@@ -74,11 +74,31 @@ class QueryBuilder
 
     public function whereIn(string $key, array $params): self
     {
-        if ($this->checkType()) {
+        if (!in_array($this->query->type, ['select', 'update', 'delete'])) {
             throw new Exception("WHERE IN can only be added to SELECT, UPDATE OR DELETE");
         }
         $inKeysString = implode(', ', array_map(fn($attr) => ":$attr", array_keys($params)));
         $this->query->whereIn = " WHERE $key IN ($inKeysString)";
+
+        return $this;
+    }
+
+    public function limit(int $start, int $offset = null): self
+    {
+        if ($this->query->type !== 'select') {
+            throw new Exception("LIMIT can only be added to SELECT");
+        }
+        $this->query->limit = $offset ? " LIMIT " . $start . ", " . $offset : " LIMIT " . $start;
+
+        return $this;
+    }
+
+    public function offset(int $offset): self
+    {
+        if ($this->query->type !== 'select') {
+            throw new Exception("OFFSET can only be added to SELECT");
+        }
+        $this->query->offset = " OFFSET " . $offset;
 
         return $this;
     }
@@ -93,6 +113,12 @@ class QueryBuilder
         if (isset($query->whereIn)) {
             $sql .= $query->whereIn;
         }
+        if (isset($query->limit)) {
+            $sql .= $query->limit;
+        }
+        if (isset($query->offset)) {
+            $sql .= $query->offset;
+        }
         $sql .= ";";
         return $sql;
     }
@@ -100,7 +126,7 @@ class QueryBuilder
 
     private function checkType(): bool
     {
-        return in_array($this->query->type, ['select', 'update', 'delete']);
+        return !in_array($this->query->type, ['select', 'update', 'delete']);
     }
 
 }

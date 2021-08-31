@@ -63,10 +63,11 @@ class Order extends BaseModel
         $orderId = $this->create();
         foreach (Application::$app->session->get('cart') as $productId => $qnt) {
             $params = ['order_id' => $orderId, 'product_id' => $productId, 'count' => $qnt];
-            $this->save('order_product', ['order_id', 'product_id', 'count'], $params);
+            $sql = $this->builder->insert($this->pivotTable(),array_keys($params))->getSQL();
+            $stmt = $this->query($sql,$params);
         }
 
-        return true;
+        return $stmt->rowCount() > 0;
     }
 
     public function getFullPrice()

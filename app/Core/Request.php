@@ -28,9 +28,16 @@ class Request
         return $this->method() === 'POST';
     }
 
-    public function has(string $search): bool
+    public function has($search): bool
     {
-        return array_key_exists($search, $this->getBody());
+        if (is_string($search)) {
+            return array_key_exists($search, $this->getBody());
+        }
+        if (is_array($search)) {
+            foreach ($search as $item) {
+                return array_key_exists($item, $this->getBody()) && !empty($this->getBody()[$item]);
+            }
+        }
     }
 
     private function hashName()
@@ -40,7 +47,8 @@ class Request
         return time() . md5($this->files['name']) . '.' . end($arrayType);
     }
 
-    public function getClientOriginalName():string{
+    public function getClientOriginalName(): string
+    {
         return $this->files['name'];
     }
 
