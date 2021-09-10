@@ -48,12 +48,12 @@ class DatabaseModel extends Model
 
     public function prepare(string $query)
     {
-        return Application::$app->db->prepare($query);
+        return Application::$app->db->connect()->prepare($query);
     }
 
     public function lastInsertId(): ?string
     {
-        return Application::$app->db->lastInsertId() ?: null;
+        return Application::$app->db->connect()->lastInsertId() ?: null;
     }
 
     public function count(): ?int

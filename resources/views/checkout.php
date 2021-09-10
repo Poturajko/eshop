@@ -13,7 +13,7 @@ $this->title = 'Оформить заказ';
                <div class="form-group">
                   <label for="name" class="control-label col-lg-offset-3 col-lg-2">Имя: </label>
                   <div class="col-lg-4">
-                     <input type="text" name="name" id="name" value="<?= $order->name ?>" class="form-control">
+                     <input type="text" name="name" id="name" value="<?= $order->name ?? '' ?>" class="form-control">
                       <?php if ($order->hasError('name')): ?>
                          <div class="alert alert-danger">
                              <?= $order->getFirstError('name') ?>
@@ -27,7 +27,7 @@ $this->title = 'Оформить заказ';
                   <label for="phone" class="control-label col-lg-offset-3 col-lg-2">Номер
                      телефона: </label>
                   <div class="col-lg-4">
-                     <input type="text" name="phone" id="phone" value="<?= $order->phone ?>" class="form-control">
+                     <input type="text" name="phone" id="phone" value="<?= $order->phone ?? '' ?>" class="form-control">
                       <?php if ($order->hasError('phone')): ?>
                          <div class="alert alert-danger">
                              <?= $order->getFirstError('phone') ?>
@@ -40,7 +40,7 @@ $this->title = 'Оформить заказ';
                <div class="form-group">
                   <label for="name" class="control-label col-lg-offset-3 col-lg-2">Email: </label>
                   <div class="col-lg-4">
-                     <input type="text" name="email" id="email" value="<?= $order->email ?>" class="form-control">
+                     <input type="text" name="email" id="email" value="<?= $order->email ?? '' ?>" class="form-control">
                       <?php if ($order->hasError('email')): ?>
                          <div class="alert alert-danger">
                              <?= $order->getFirstError('email') ?>

@@ -4,58 +4,56 @@
 namespace App\Models;
 
 
-use App\Core\Application;
-use App\Core\BaseModel;
-use App\Core\Model;
+use App\Core\Base\BaseModel;
 
 class Product extends BaseModel
 {
-    public string $id;
+    public int $id;
     public string $name;
     public string $code;
-    public string $category_id;
-    public string $price;
+    public int $category_id;
+    public float $price;
     public string $description;
     public ?string $image;
     public bool $hit;
     public bool $new;
     public bool $recommend;
+    public int $count;
 
-    public function primaryKey(): string
-    {
-        return 'id';
-    }
+    public const TABLE_NAME = 'products';
 
-    public function foreignKey(): string
-    {
-        return 'category_id';
-    }
+    public const PRIMARY_KEY = 'id';
 
-    public function foreignPivotKey(): string
+    public const FOREIGN_KEY = 'category_id';
+
+    public const FOREIGN_PIVOT_KEY = 'product_id';
+
+    public const PIVOT_TABLE_NAME = 'order_product';
+
+    public function __construct()
     {
-        return 'product_id';
+        parent::__construct(self::TABLE_NAME, self::PRIMARY_KEY, static::class);
     }
 
     public function attributes(): array
     {
         return [
-            'id','name','code', 'category_id','price','description','image','hit','new','recommend'
+            'id',
+            'name',
+            'code',
+            'category_id',
+            'price',
+            'description',
+            'image',
+            'hit',
+            'new',
+            'recommend'
         ];
-    }
-
-    public function rules(): array
-    {
-        return [];
-    }
-
-    public function tableName(): string
-    {
-        return 'products';
     }
 
     public function category()
     {
-        return $this->belongsTo(Category::class);
+        return $this->getRelation()->belongsTo(Category::class);
     }
 
     public function isHit()
@@ -72,4 +70,5 @@ class Product extends BaseModel
     {
         return $this->recommend == 1;
     }
+
 }

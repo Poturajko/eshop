@@ -3,26 +3,28 @@
 namespace App\Core;
 
 
+use App\Core\Base\BaseController;
 use App\Core\Database\Connection;
-use App\Core\Middleware\MiddlewareInterface;
 use App\Core\Middleware\MiddlewareStack;
+use App\Core\Router\IRouter;
+use App\Core\Router\Router;
+use App\Core\Router\RouterFactory;
 use App\Models\User;
 use Exception;
-use PDO;
+use function DI\create;
 
 class Application
 {
     public static Application $app;
-    public static $layouts = 'main';
-    public ?Controller $controller;
-    public Router $router;
-    public Request $request;
-    public Response $response;
+    private static $layouts = 'main';
+    public ?BaseController $controller;
+    public IRouter $router;
+    private Request $request;
+    private Response $response;
     public View $view;
     public Session $session;
-    public PDO $db;
     public ?User $user;
-    public $userClass;
+    private $userClass;
 
     public MiddlewareStack $middleware;
 
@@ -33,21 +35,21 @@ class Application
         $this->middleware = new MiddlewareStack();
         $this->response = new Response();
         $this->request = new Request();
-        $this->router = new Router($this->request, $this->response, $this->middleware);
+        $this->router = (new RouterFactory($this->response, $this->request, $this->middleware))
+            ->create(Router::class);
         $this->view = new View();
         $this->session = new Session();
-        $this->db = Connection::connect();
 
         $this->userClass = $userClass;
         $userId = $this->session->get('user');
         if ($userId) {
-            $this->user = $this->userClass->where('id', $userId)->first();
+            $this->user = $this->userClass->getRepo()->findOneBy(['id' => $userId]);
         }
     }
 
     public function addMiddleware(string $middleware)
     {
-        if (class_exists($middleware)){
+        if (class_exists($middleware)) {
             $instance = new $middleware();
             $this->middleware->add($instance);
         }

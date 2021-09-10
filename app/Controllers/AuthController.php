@@ -4,13 +4,13 @@ namespace App\Controllers;
 
 
 use App\Core\Application;
-use App\Core\Controller;
+use App\Core\Base\BaseController;
 use App\Core\Request;
 use App\Core\Response;
 use App\Models\LoginForm;
 use App\Models\User;
 
-class AuthController extends Controller
+class AuthController extends BaseController
 {
     public function login(Request $request, Response $response)
     {
@@ -30,10 +30,9 @@ class AuthController extends Controller
     {
         $user = new User();
         if ($request->isPost()) {
-            $params = $request->getBody();
-            $user->loadData($params);
+            $user->loadData($request->getBody());
             if ($user->validate()) {
-                $userId = $user->create($params);
+                $userId = $user->create();
                 Application::$app->session->set('user', $userId);
                 $response->redirect('/');
             }
@@ -42,7 +41,7 @@ class AuthController extends Controller
         $this->render('auth', 'register', compact('user'));
     }
 
-    public function logout(Request $request, Response $response)
+    public function logout(Response $response)
     {
         Application::$app->logout();
         $response->redirect('/');

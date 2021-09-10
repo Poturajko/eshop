@@ -3,24 +3,24 @@
 namespace App\Controllers\User;
 
 use App\Core\Application;
-use App\Core\Controller;
+use App\Core\Base\BaseController;
 use App\Core\Request;
 use App\Core\Response;
 use App\Models\Order;
 
-class OrderController extends Controller
+class OrderController extends BaseController
 {
     public function index()
     {
         $userId = Application::$app->user->id;
-        $orders = (new Order())->where('user_id', $userId)->get();
+        $orders = (new Order())->getRepo()->findBy([], ['user_id' => $userId]);
 
         $this->render('auth', 'auth/orders/index', compact('orders'));
     }
 
-    public function show(Request $request,Response $response, int $id)
+    public function show(int $id)
     {
-        $order = (new Order())->where('id', $id)->first();
+        $order = (new Order())->getRepo()->find($id);
 
         $this->render('auth', 'auth/orders/show', compact('order'));
     }

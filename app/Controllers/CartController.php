@@ -4,25 +4,24 @@ namespace App\Controllers;
 
 
 use App\Core\Application;
-use App\Core\Controller;
-use App\Core\Middleware\CartMiddleware;
+use App\Core\Base\BaseController;
 use App\Core\Request;
 use App\Core\Response;
 use App\Models\Cart;
 use App\Models\Order;
 use App\Models\Product;
 
-class CartController extends Controller
+class CartController extends BaseController
 {
     public function cart()
     {
-        $idsArray = array_keys(Application::$app->session->get('cart'));
-        $products = (new Product())->whereIn('id', $idsArray)->get();
+        $ids = array_keys(Application::$app->session->get('cart'));
+        $products = (new Product())->getRepo()->findByIds(['id' => $ids]);
 
         $this->render('master', 'cart', compact('products'));
     }
 
-    public function cartAdd(Request $request, Response $response, $id)
+    public function cartAdd(Response $response, $id)
     {
         (new Cart())->addProductToCart($id);
         Application::$app->session->set('success', 'Товар добавлен');
@@ -30,7 +29,7 @@ class CartController extends Controller
         $response->back();
     }
 
-    public function cartRemove(Request $request, Response $response, $id)
+    public function cartRemove(Response $response, $id)
     {
         $result = (new Cart())->removeProductInCart($id);
         if (!$result) {

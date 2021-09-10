@@ -54,8 +54,8 @@ class Cart
     public function getFullSum(): int
     {
         $productsInCart = Application::$app->session->get('cart');
-        $idsArray = array_keys($productsInCart);
-        $products = (new Product())->whereIn('id',$idsArray)->get();
+        $ids = array_keys($productsInCart);
+        $products = (new Product())->getRepo()->findByIds(['id' => $ids]);
 
         $sum = 0;
         foreach ($products as $product) {

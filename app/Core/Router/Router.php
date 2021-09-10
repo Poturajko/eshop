@@ -1,19 +1,21 @@
 <?php
 
-namespace App\Core;
+namespace App\Core\Router;
 
-use App\Controllers\MainController;
+use App\Core\Application;
 use App\Core\Exception\NotFoundException;
-use App\Core\Middleware\CartIsEmpty;
 use App\Core\Middleware\MiddlewareStack;
+use App\Core\Request;
+use App\Core\Response;
+use ReflectionMethod;
 
-class Router
+class Router implements IRouter
 {
-    public Response $response;
-    public Request $request;
-    public MiddlewareStack $middleware;
+    private Response $response;
+    private Request $request;
+    private MiddlewareStack $middleware;
 
-    public array $routeMap = [];
+    private array $routeMap = [];
 
     public function __construct(Request $request, Response $response, MiddlewareStack $middleware)
     {
@@ -71,8 +73,29 @@ class Router
             throw new NotFoundException();
         }
 
-        return call_user_func_array([$callback[0], $callback[1]],
-            array_merge_recursive([$this->request, $this->response], $params));
+        $args = $this->getParameters($controller, $controller->action, $params);
+
+        return call_user_func_array([$callback[0], $callback[1]], $args);
+    }
+
+    private function getParameters(object $controller, string $action, array $params = []): array
+    {
+        $rm = new ReflectionMethod($controller, $action);
+        $parameters = $rm->getParameters();
+        if (isset($parameters) && !empty($parameters)) {
+            $arrayParams = [];
+            foreach ($parameters as $args) {
+                $reflectionType = $args->getType();
+                if ($reflectionType && class_exists($reflectionType->getName())) {
+                    $classString = $reflectionType->getName();
+                    $arrayParams [] = new $classString();
+                }
+            }
+
+            return array_merge($arrayParams, $params);
+        }
+
+        return [];
     }
 
 }

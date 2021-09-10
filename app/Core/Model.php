@@ -32,27 +32,23 @@ abstract class Model
                     $ruleName = $rule[0];
                 }
                 if ($ruleName === self::RULE_REQUIRED && !$value) {
-                    $this->addError($attribute,'Поле обязательно для заполнения');
+                    $this->addError($attribute, 'Поле обязательно для заполнения');
                 }
                 if ($ruleName === self::RULE_EMAIL && !filter_var($value, FILTER_VALIDATE_EMAIL)) {
-                    $this->addError($attribute,'Не корректный e-mail адресс');
+                    $this->addError($attribute, 'Не корректный e-mail адресс');
                 }
                 if ($ruleName === self::RULE_MIN && strlen($value) < $rule['min']) {
-                    $this->addError($attribute,"Поле должно содержать минимум {$rule['min']} символов.");
+                    $this->addError($attribute, "Поле должно содержать минимум {$rule['min']} символов.");
                 }
                 if ($ruleName === self::RULE_MATCH && $value !== $this->{$rule['match']}) {
-                    $this->addError($attribute,'Поле должно совпадать с полем пароль');
+                    $this->addError($attribute, 'Поле должно совпадать с полем пароль');
                 }
                 if ($ruleName === self::RULE_UNIQUE) {
                     $className = new $rule['class'];
                     $uniqueAttribute = $rule['attribute'] ?? $attribute;
-                    $tableName = $className->tableName();
-                    $stmt = Application::$app->db->prepare("SELECT * FROM $tableName WHERE $uniqueAttribute = :$uniqueAttribute");
-                    $stmt->bindValue(":$uniqueAttribute", $value);
-                    $stmt->execute();
-                    $record = $stmt->fetch();
-                    if ($record){
-                        $this->addError($attribute,'Такая запись уже существует');
+                    $user = $className->getRepo()->findOneBy([$uniqueAttribute => $value]);
+                    if (isset($user)) {
+                        $this->addError($attribute, 'Такая запись уже существует');
                     }
                 }
             }
@@ -71,7 +67,7 @@ abstract class Model
         return $this->errors[$attribute] ?? false;
     }
 
-    public function getFirstError(string $attribute):string
+    public function getFirstError(string $attribute): string
     {
         $errors = $this->errors[$attribute] ?? [];
         return $errors[0] ?? '';

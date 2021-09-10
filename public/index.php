@@ -1,7 +1,6 @@
 <?php
 ini_set('display_errors', 1);
-error_reporting(E_WARNING);
-error_reporting(E_ERROR);
+error_reporting(E_WARNING|E_ERROR);
 
 use App\Controllers\Admin\CategoryController;
 use App\Controllers\Admin\OrderController;
@@ -36,16 +35,16 @@ $app->router->post('/admin/categories', [CategoryController::class, 'store']);
 $app->router->get('/admin/categories/create', [CategoryController::class, 'create']);
 $app->router->get('/admin/categories/{id}', [CategoryController::class, 'show']);
 $app->router->get('/admin/{id}/categories', [CategoryController::class, 'edit']);
-$app->router->post('/admin/categories/{id}', [CategoryController::class, 'update']);
 $app->router->post('/admin/categories/delete/{id}', [CategoryController::class, 'destroy']);
+$app->router->post('/admin/categories/{id}', [CategoryController::class, 'update']);
 
 $app->router->get('/admin/products', [ProductController::class, 'index']);
 $app->router->post('/admin/products', [ProductController::class, 'store']);
 $app->router->get('/admin/products/create', [ProductController::class, 'create']);
 $app->router->get('/admin/products/{id}', [ProductController::class, 'show']);
 $app->router->get('/admin/{id}/products', [ProductController::class, 'edit']);
-$app->router->post('/admin/products/{id}', [ProductController::class, 'update']);
 $app->router->post('/admin/products/delete/{id}', [ProductController::class, 'destroy']);
+$app->router->post('/admin/products/{id}', [ProductController::class, 'update']);
 
 $app->router->get('/admin/orders', [OrderController::class, 'index']);
 $app->router->get('/admin/orders/{order}', [OrderController::class, 'show']);

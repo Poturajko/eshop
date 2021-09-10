@@ -15,8 +15,8 @@
    <form method="POST" enctype="multipart/form-data"
        <?php
        echo (isset($category))
-           ? "action='/admin/category/$category->id'"
-           : "action='/admin/category'";
+           ? "action='/admin/categories/$category->id'"
+           : "action='/admin/categories'";
        ?>
    >
       <div>

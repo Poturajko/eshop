@@ -31,7 +31,7 @@ class Request
     public function has($search): bool
     {
         if (is_string($search)) {
-            return array_key_exists($search, $this->getBody());
+            return array_key_exists($search, $this->getBody()) && !empty($this->getBody()[$search]);
         }
         if (is_array($search)) {
             foreach ($search as $item) {
@@ -59,13 +59,13 @@ class Request
         return $this;
     }
 
-    public function store(string $path): ?string
+    public function store(string $path, bool $originalName = false): ?string
     {
-        $pathTo = STORAGE_DIR . '/' . $path;
-        if (!mkdir($pathTo) && !is_dir($pathTo)) {
+        $pathTo = STORAGE_DIR . '/' . $path . '/';
+        if (!@mkdir($pathTo) && !is_dir($pathTo)) {
             throw new \RuntimeException(sprintf('Directory "%s" was not created', $pathTo));
         }
-        $pathTo .= '/' . $this->hashName();
+        $pathTo .= !$originalName ? $this->hashName() : $this->getClientOriginalName();
 
         return move_uploaded_file($this->files['tmp_name'], $pathTo) ? $pathTo : null;
     }

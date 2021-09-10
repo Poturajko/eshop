@@ -36,7 +36,7 @@ $this->title = 'Категория ' . $category->id
             </tr>
             <tr>
                 <td>Кол-во товаров</td>
-                <td><?=count($category->products())?></td>
+                <td><?= $category->products() !== null ? count($category->products()) : 0 ?></td>
             </tr>
             </tbody>
         </table>

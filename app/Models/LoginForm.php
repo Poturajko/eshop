@@ -3,9 +3,9 @@
 namespace App\Models;
 
 use App\Core\Application;
-use App\Core\BaseModel;
+use App\Core\Model;
 
-class LoginForm extends BaseModel
+class LoginForm extends Model
 {
     public string $email;
     public string $password;
@@ -20,7 +20,7 @@ class LoginForm extends BaseModel
 
     public function login(): bool
     {
-        $user = (new User())->where('email', $this->email)->first();
+        $user = (new User())->getRepo()->findOneBy(['email' => $this->email]);
         if (!$user) {
             $this->addError('email', 'Пользователя с таким e-mail не существует');
             return false;
@@ -36,10 +36,5 @@ class LoginForm extends BaseModel
     public function attributes(): array
     {
         return ['email', 'password'];
-    }
-
-    public function tableName(): string
-    {
-        return '';
     }
 }

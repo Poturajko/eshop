@@ -1,6 +1,8 @@
 <?php
 
-namespace App\Core;
+namespace App\Core\Utility;
+
+use App\Core\Request;
 
 class Pagination
 {
@@ -12,7 +14,7 @@ class Pagination
 
     private $limit;
 
-    public function __construct($total, $limit)
+    public function __construct(Request $request, $total, $limit)
     {
         $this->total = $total;
 
@@ -20,7 +22,7 @@ class Pagination
 
         $this->amount = $this->amount();
 
-        $currentPage = Application::$app->request->getBody()['page'] ?: 1;
+        $currentPage = $request->getBody()['page'] ?: 1;
 
         $this->setCurrentPage($currentPage);
     }

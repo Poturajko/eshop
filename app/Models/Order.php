@@ -4,30 +4,28 @@ namespace App\Models;
 
 
 use App\Core\Application;
-use App\Core\BaseModel;
+use App\Core\Base\BaseModel;
 
 class Order extends BaseModel
 {
-    public string $id = '';
-    public string $name = '';
-    public string $user_id = '';
-    public string $phone = '';
-    public string $email = '';
-    public string $status = '';
+    public int $id;
+    public string $name;
+    public ?int $user_id;
+    public string $phone;
+    public string $email;
+    public bool $status;
 
-    public function primaryKey()
-    {
-        return 'id';
-    }
+    public const TABLE_NAME = 'orders';
 
-    public function foreignPivotKey()
-    {
-        return 'order_id';
-    }
+    public const PRIMARY_KEY = 'id';
 
-    public function pivotTable()
+    public const FOREIGN_PIVOT_KEY = 'order_id';
+
+    public const PIVOT_TABLE = 'order_product';
+
+    public function __construct()
     {
-        return 'order_product';
+        parent::__construct(self::TABLE_NAME, self::PRIMARY_KEY, static::class);
     }
 
     public function rules(): array
@@ -44,38 +42,48 @@ class Order extends BaseModel
         return ['id', 'user_id', 'name', 'phone', 'email', 'status'];
     }
 
-    public function tableName(): string
-    {
-        return 'orders';
-    }
-
     public function products()
     {
-        return $this->belongsToMany(Product::class);
+        return $this->getRelation()->belongsToMany(Product::class);
     }
 
     public function saveOrder(): bool
     {
-        $this->status = 1;
-        if (Application::auth() !== null) {
-            $this->user_id = Application::$app->user->id;
-        }
-        $orderId = $this->create();
-        foreach (Application::$app->session->get('cart') as $productId => $qnt) {
-            $params = ['order_id' => $orderId, 'product_id' => $productId, 'count' => $qnt];
-            $sql = $this->builder->insert($this->pivotTable(),array_keys($params))->getSQL();
-            $stmt = $this->query($sql,$params);
+        $this->user_id = !is_null(Application::auth()) ? Application::$app->user->id : null;
+        $fields = [
+            'status' => 1,
+            'name' => $this->name,
+            'phone' => $this->phone,
+            'email' => $this->email,
+            'user_id' => $this->user_id,
+        ];
+        if ($this->getRepo()->save($fields)) {
+            $orderId = $this->getRepo()->lastId();
+            foreach (Application::$app->session->get('cart') as $productId => $qnt) {
+                $this->getRepo()->save([
+                    'order_id' => $orderId,
+                    'product_id' => $productId,
+                    'count' => $qnt,
+                ], self::PIVOT_TABLE);
+            }
+
+            return true;
         }
 
-        return $stmt->rowCount() > 0;
+        return false;
     }
 
     public function getFullPrice()
     {
         foreach ($this->products() as $product) {
-            $sum += $product->price;
+            $sum += $product->price * $product->count;
         }
 
         return $sum;
+    }
+
+    public function getPriceForCount(float $price, int $count)
+    {
+        return $price * $count;
     }
 }

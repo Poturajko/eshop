@@ -69,4 +69,4 @@ $this->title = 'Главная'
     <?php endforeach; ?>
 </div>
 
-<?= $pagination->get() ?>
+<?= $paginate->get()?>

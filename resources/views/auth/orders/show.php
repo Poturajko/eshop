@@ -27,14 +27,14 @@ $title = 'Заказ ' . $order->id;
                                         <?= $product->name ?>
                                     </a>
                                 </td>
-                                <td><span class="badge">1</span></td>
-                                <td><?= $product->price ?> $</td>
-                                <td> $</td>
+                                <td><span class="badge"><?= $product->count ?></span></td>
+                                <td><?= $product->price ?></td>
+                                <td> <?= $order->getPriceForCount($product->price, $product->count) ?></td>
                             </tr>
                         <?php endforeach; ?>
                         <tr>
                             <td colspan="3">Общая стоимость:</td>
-                            <td><?= $order->getFullPrice() ?> $ </td>
+                            <td><?= $order->getFullPrice() ?> </td>
                         </tr>
                         </tbody>
                     </table>

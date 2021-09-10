@@ -4,19 +4,23 @@
 namespace App\Models;
 
 
-use App\Core\BaseModel;
+use App\Core\Base\BaseModel;
 
 class Category extends BaseModel
 {
-    public string $id = '';
-    public string $code = '';
-    public string $name = '';
-    public string $description = '';
-    public ?string $image = '';
+    public int $id;
+    public string $code;
+    public string $name;
+    public string $description;
+    public $image;
 
-    public function primaryKey(): string
+    public const TABLE_NAME = 'categories';
+
+    public const PRIMARY_KEY = 'id';
+
+    public function __construct()
     {
-        return 'id';
+        parent::__construct(self::TABLE_NAME, self::PRIMARY_KEY, static::class);
     }
 
     public function rules(): array
@@ -35,13 +39,8 @@ class Category extends BaseModel
         ];
     }
 
-    public function tableName(): string
-    {
-        return 'categories';
-    }
-
     public function products()
     {
-        return $this->hasMany(Product::class);
+        return $this->getRelation()->hasMany(Product::class);
     }
 }

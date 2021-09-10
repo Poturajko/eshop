@@ -3,20 +3,24 @@
 namespace App\Models;
 
 
-use App\Core\BaseModel;
+use App\Core\Base\BaseModel;
 
 class User extends BaseModel
 {
-    public string $id = '';
-    public string $is_admin = '';
-    public string $name = '';
-    public string $email = '';
-    public string $password = '';
-    public string $passwordConfirmation = '';
+    public int $id;
+    public bool $is_admin;
+    public string $name;
+    public string $email;
+    public string $password;
+    public string $passwordConfirmation;
 
-    public function tableName(): string
+    public const TABLE_NAME = 'users';
+
+    public const PRIMARY_KEY = 'id';
+
+    public function __construct()
     {
-        return 'users';
+        parent::__construct(self::TABLE_NAME, self::PRIMARY_KEY, static::class);
     }
 
     public function attributes(): array
@@ -34,11 +38,16 @@ class User extends BaseModel
         ];
     }
 
-    public function create(array $params = []): ?string
+    public function create(array $params = []): int
     {
-        unset($params['passwordConfirmation']);
-        $params['password'] = password_hash($this->password, PASSWORD_BCRYPT);
-        return parent::create($params);
+        $result = $this->getRepo()->save([
+            'is_admin' => 0,
+            'name' => $this->name,
+            'email' => $this->email,
+            'password' => password_hash($this->password, PASSWORD_BCRYPT),
+        ]);
+
+        return $result ?: $this->getRepo()->lastId();
     }
 
 }
