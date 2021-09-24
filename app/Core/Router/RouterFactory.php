@@ -3,8 +3,8 @@
 namespace App\Core\Router;
 
 use App\Core\Middleware\MiddlewareStack;
-use App\Core\Request;
-use App\Core\Response;
+use App\Core\Request\Request;
+use App\Core\Response\Response;
 use UnexpectedValueException;
 
 class RouterFactory

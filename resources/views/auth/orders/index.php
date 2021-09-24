@@ -28,6 +28,7 @@ $this->title = 'Заказы';
                     Действия
                 </th>
             </tr>
+            <?php if (isset($orders) && !is_null($orders)): ?>
             <?php foreach($orders as $order): ?>
                 <tr>
                     <td><?= $order->id ?></td>
@@ -39,7 +40,7 @@ $this->title = 'Заказы';
                     <td>
                         <div class="btn-group" role="group">
                             <a class="btn btn-success" type="button"
-                               <?php if (\App\Core\Application::isAdmin()): ?>
+                               <?php if (admin()): ?>
                                href="/admin/orders/<?=$order->id?>"
                                <?php else: ?>
                                href="/user/orders/<?=$order->id?>"
@@ -49,6 +50,7 @@ $this->title = 'Заказы';
                     </td>
                 </tr>
             <?php endforeach; ?>
+            <?php endif; ?>
 
             </tbody>
         </table>

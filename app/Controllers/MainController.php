@@ -4,7 +4,7 @@
 namespace App\Controllers;
 
 use App\Core\Base\BaseController;
-use App\Core\Request;
+use App\Core\Request\Request;
 use App\Core\Utility\Pagination;
 use App\Models\Category;
 use App\Models\Product;
@@ -54,4 +54,5 @@ class MainController extends BaseController
 
         $this->render('master', 'product', compact('product'));
     }
+
 }

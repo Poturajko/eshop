@@ -2,7 +2,7 @@
 
 namespace App\Core\Utility;
 
-use App\Core\Request;
+use App\Core\Request\Request;
 
 class Pagination
 {

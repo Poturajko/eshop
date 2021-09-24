@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use App\Core\Application;
-use App\Core\Model;
+use App\Core\Auth\Model;
 
 class LoginForm extends Model
 {
@@ -29,8 +29,9 @@ class LoginForm extends Model
             $this->addError('password', 'Не верный пароль');
             return false;
         }
+        session('user', $user->id);
 
-        return Application::$app->login($user);
+        return true;
     }
 
     public function attributes(): array

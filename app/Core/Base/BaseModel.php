@@ -2,7 +2,7 @@
 
 namespace App\Core\Base;
 
-use App\Core\Model;
+use App\Core\Auth\Model;
 use App\Core\Orm\DataRepository\DataRepository;
 use App\Core\Orm\DataRepository\DataRepositoryFactory;
 use App\Core\Orm\DataRepository\IDataRepository;

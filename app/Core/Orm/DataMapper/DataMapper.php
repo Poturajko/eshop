@@ -38,6 +38,16 @@ class DataMapper implements IDataMapper
         return $this;
     }
 
+    public function getLastId(): int
+    {
+        if ($this->db->getConnection()) {
+            $lastId = $this->db->getConnection()->lastInsertId();
+            if (!empty($lastId)) {
+                return (int)$lastId;
+            }
+        }
+    }
+
     public function bind($value)
     {
         try {
@@ -68,7 +78,7 @@ class DataMapper implements IDataMapper
             if (is_array($value)) {
                 foreach ($value as $k => $item) {
                     if (count($fields) > 1){
-                        $this->stmt->bindValue(':' . $key, $item, $this->bind($item));
+                        $this->stmt->bindValue(':' . $item, $item, $this->bind($item));
                     }else{
                         $this->stmt->bindValue(':' . $k, $item, $this->bind($item));
                     }
@@ -122,16 +132,6 @@ class DataMapper implements IDataMapper
     public function column()
     {
         return $this->stmt->fetchColumn();
-    }
-
-    public function getLastId(): int
-    {
-        if ($this->db->getConnection()) {
-            $lastId = $this->db->getConnection()->lastInsertId();
-            if (!empty($lastId)) {
-                return $lastId;
-            }
-        }
     }
 
     public function buildQueryParameters(array $conditions = [], array $parameters = []): array

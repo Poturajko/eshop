@@ -18,8 +18,8 @@ $this->title = 'Корзина'
       <?php foreach ($products as $product):?>
       <tr>
          <td>
-            <a href="http://internet-shop.tmweb.ru/mobiles/iphone_x_64">
-               <img height="56px" src="http://internet-shop.tmweb.ru/storage/products/iphone_x.jpg">
+            <a href="<?= $product->category()->code . '/' . $product->code?>">
+               <img height="56px" src="<?= url($product->image)?>">
             <?=$product->name?>
             </a>
          </td>

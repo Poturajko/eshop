@@ -4,11 +4,12 @@ namespace App\Models;
 
 
 use App\Core\Base\BaseModel;
+use http\Message\Body;
 
 class User extends BaseModel
 {
     public int $id;
-    public bool $is_admin;
+    public int $is_admin;
     public string $name;
     public string $email;
     public string $password;
@@ -38,16 +39,14 @@ class User extends BaseModel
         ];
     }
 
-    public function create(array $params = []): int
+    public function create(array $params = []): bool
     {
-        $result = $this->getRepo()->save([
+        return $this->getRepo()->save([
             'is_admin' => 0,
             'name' => $this->name,
             'email' => $this->email,
             'password' => password_hash($this->password, PASSWORD_BCRYPT),
         ]);
-
-        return $result ?: $this->getRepo()->lastId();
     }
 
 }

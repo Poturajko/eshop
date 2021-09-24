@@ -1,7 +1,7 @@
 <?php
-namespace App\Core;
+namespace App\Core\Response;
 
-class Response
+class Response implements IResponse
 {
     public function setStatusCode(int $code)
     {

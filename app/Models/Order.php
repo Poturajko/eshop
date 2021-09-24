@@ -49,17 +49,18 @@ class Order extends BaseModel
 
     public function saveOrder(): bool
     {
-        $this->user_id = !is_null(Application::auth()) ? Application::$app->user->id : null;
+        $this->user_id = !is_null(auth()) ? Application::$app->user->id : null;
         $fields = [
             'status' => 1,
             'name' => $this->name,
             'phone' => $this->phone,
             'email' => $this->email,
             'user_id' => $this->user_id,
+            'created_at' => date('Y-m-d H:i:s'),
         ];
         if ($this->getRepo()->save($fields)) {
             $orderId = $this->getRepo()->lastId();
-            foreach (Application::$app->session->get('cart') as $productId => $qnt) {
+            foreach (session()->get('cart') as $productId => $qnt) {
                 $this->getRepo()->save([
                     'order_id' => $orderId,
                     'product_id' => $productId,

@@ -28,7 +28,7 @@ $this->title = $category->name
                 <?php endif; ?>
             </div>
 
-            <img src="http://internet-shop.tmweb.ru/storage/products/iphone_x_silver.jpg" alt="iPhone X 256GB">
+            <img src="<?=url($product->image)?>" alt="<?=$product->name?>">
             <div class="caption">
                <h3><?=$product->name?></h3>
                <p><?=$product->price?></p>

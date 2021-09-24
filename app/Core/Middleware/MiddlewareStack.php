@@ -2,8 +2,9 @@
 
 namespace App\Core\Middleware;
 
-use App\Core\Request;
-use App\Core\Response;
+
+use App\Core\Request\Request;
+use App\Core\Response\Response;
 use Closure;
 
 class MiddlewareStack

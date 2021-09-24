@@ -2,7 +2,8 @@
 
 namespace App\Core\Orm\QueryBuilder;
 
-use http\Exception\InvalidArgumentException;
+
+use InvalidArgumentException;
 
 class QueryBuilder implements IQueryBuilder
 {
@@ -145,14 +146,19 @@ class QueryBuilder implements IQueryBuilder
         if (isset($this->key['conditions']) && $this->key['conditions'] !== '') {
             if (is_array($this->key['conditions'])) {
                 $sort = [];
+                $val = '';
                 foreach (array_keys($this->key['conditions']) as $where) {
                     if (isset($where) && $where !== '') {
                         if (is_array($this->key['conditions'][$where])) {
                             foreach ($this->key['conditions'][$where] as $operand => $value) {
-                                if (count($this->key['conditions']) >= 1){
-                                    $sort [] = !is_int($operand) ? $where . " $operand :" . $where
-                                        : $where . " IN (:$operand)";
-                                }else{
+                                if (count($this->key['conditions']) >= 1) {
+                                    if (!is_int($operand)) {
+                                        $sort [] = $where . " $operand :" . $value;
+                                    }else{
+                                        $val .= ":$operand,";
+                                        $sort [0] = $where . ' IN ' . '(' . rtrim($val, ',') . ')';
+                                    }
+                                } else {
                                     $sort [] = $where . " $operand :" . $value;
                                 }
                             }

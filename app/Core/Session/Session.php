@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Core;
+namespace App\Core\Session;
 
-class Session
+class Session implements ISession
 {
 
     public function __construct()

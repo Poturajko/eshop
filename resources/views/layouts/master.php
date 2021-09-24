@@ -21,13 +21,12 @@
       </div>
       <div id="navbar" class="collapse navbar-collapse">
          <ul class="nav navbar-nav">
-            <li <?php echo (\App\Core\Application::routeActive('index')) ? 'class="active"' : '' ?> >
+            <li <?php echo (routeActive('index')) ? 'class="active"' : '' ?> >
                <a href="/">Все товары</a></li>
-            <li <?php echo (\App\Core\Application::routeActive('categories')) ? 'class="active"' : '' ?> >
+            <li <?php echo (routeActive('categories')) ? 'class="active"' : '' ?> >
                <a href="/categories">Категории</a></li>
-            <li <?php echo (\App\Core\Application::routeActive('cart')) ? 'class="active"' : '' ?> >
+            <li <?php echo (routeActive('cart')) ? 'class="active"' : '' ?> >
                <a href="/cart">В корзину</a></li>
-            <li><a href="#">Сбросить проект в начальное состояние</a></li>
             <li><a href="#">en</a></li>
 
             <li class="dropdown">
@@ -43,13 +42,13 @@
 
          <ul class="nav navbar-nav navbar-right">
 
-             <?php if (\App\Core\Application::isGuest()): ?>
+             <?php if (guest()): ?>
                 <li><a href="/login">Войти</a></li>
              <?php endif; ?>
 
-             <?php if (\App\Core\Application::auth()): ?>
+             <?php if (auth()): ?>
 
-                 <?php if (\App\Core\Application::isAdmin()): ?>
+                 <?php if (admin()): ?>
                    <li><a href="/admin/orders">Панель администратора</a></li>
                  <?php else: ?>
                    <li><a href="/user/orders">Мои заказы</a></li>
@@ -64,12 +63,12 @@
 
 <div class="container">
    <div class="starter-template">
-       <?php if (\App\Core\Application::$app->session->has('warning')): ?>
-          <p class="alert alert-warning"><?= \App\Core\Application::$app->session->flush('warning') ?></p>
+       <?php if (session()->has('warning')): ?>
+          <p class="alert alert-warning"><?= session()->flush('warning') ?></p>
        <?php endif; ?>
 
-       <?php if (\App\Core\Application::$app->session->has('success')): ?>
-          <p class="alert alert-success"><?= \App\Core\Application::$app->session->flush('success') ?></p>
+       <?php if (session()->has('success')): ?>
+          <p class="alert alert-success"><?= session()->flush('success') ?></p>
        <?php endif; ?>
       {{content}}
    </div>

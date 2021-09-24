@@ -3,9 +3,9 @@
 namespace App\Controllers\Admin;
 
 use App\Core\Base\BaseController;
-use App\Core\Request;
-use App\Core\Response;
-use App\Core\Storage;
+use App\Core\Request\Request;
+use App\Core\Response\Response;
+use App\Core\Storage\File;
 use App\Models\Category;
 use App\Models\Product;
 
@@ -25,7 +25,7 @@ class ProductController extends BaseController
         $this->render('auth', 'auth/products/form', compact('categories'));
     }
 
-    public function store(Request $request, Response $response)
+    public function store(Request $request)
     {
         $product = new Product();
 
@@ -33,16 +33,17 @@ class ProductController extends BaseController
             $params = $request->getBody();
             unset($params['image']);
             if ($request->has('image')) {
-                $path = $request->file('image')->store('products');
+                $file = new File($request->file('image'));
+                $path = $file->save('products');
                 $params['image'] = $path;
             }
-            if ($request->has(['hit', 'recommend', 'new'])) {
-                foreach (['hit', 'recommend', 'new'] as $item) {
+            if ($request->has(['recommend', 'hit', 'new'])) {
+                foreach (['recommend', 'hit', 'new'] as $item) {
                     $params[$item] = $params[$item] ? 1 : 0;
                 }
             }
             $product->getRepo()->save($params);
-            $response->redirect('/admin/products');
+            redirect('/admin/products');
         }
     }
 
@@ -62,31 +63,38 @@ class ProductController extends BaseController
 
     }
 
-    public function update(Request $request, Response $response, int $id)
+    public function update(Request $request, int $id)
     {
         $product = (new Product())->getRepo()->find($id);
         if ($request->isPost()) {
             $params = $request->getBody();
             unset($params['image']);
             if ($request->has('image')) {
-                Storage::delete($product->image);
-                $path = $request->file('image')->store('products');
+                $file = new File($request->file('image'));
+                if (!is_null($product->image)){
+                    $file->delete($product->image);
+                }
+                $path = $file->save('products');
                 $params['image'] = $path;
             }
-            if ($request->has(['hit', 'recommend', 'new'])) {
-                foreach (['hit', 'recommend', 'new'] as $item) {
+            if ($request->has(['recommend', 'hit', 'new'])) {
+                foreach (['recommend', 'hit', 'new'] as $item) {
                     $params[$item] = $params[$item] ? 1 : 0;
                 }
             }
             $product->getRepo()->update($id, $params);
-            $response->redirect('/admin/products');
+            redirect('/admin/products');
         }
     }
 
-    public function destroy(Response $response, int $id)
+    public function destroy(int $id)
     {
-        (new Product())->getRepo()->findByIdAndDelete(['id' => $id]);
+        $product = (new Product())->getRepo()->find($id);
+        if (!is_null($product->image)) {
+            (new File())->delete($product->image);
+        }
+        $product->getRepo()->delete($id);
 
-        $response->redirect('/admin/products');
+        redirect('/admin/products');
     }
 }

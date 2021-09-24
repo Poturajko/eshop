@@ -9,14 +9,13 @@ use App\Controllers\AuthController;
 use App\Controllers\CartController;
 use App\Controllers\MainController;
 use App\Core\Application;
-use App\Core\Middleware\CartIsEmpty;
-use App\Core\Middleware\CheckIsAdmin;
+use App\Middleware\CartIsEmpty;
+use App\Middleware\CheckIsAdmin;
 use DevCoder\DotEnv;
 
 require_once __DIR__ . '/../vendor/autoload.php';
-
 $container = require __DIR__ . '/../bootstrap/container.php';
-$const = $container->get('const');
+$container->get('const');
 (new DotEnv(ENV))->load();
 
 $app = $container->get(Application::class);

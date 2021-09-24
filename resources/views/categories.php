@@ -4,7 +4,7 @@ $this->title = 'Категории'
 <div class="panel">
     <?php foreach ($categories as $category): ?>
     <a href="/<?=$category->code?>">
-        <img src="http://internet-shop.tmweb.ru/storage/categories/mobile.jpg">
+        <img src="<?= url($category->image) ?>">
         <h2><?=$category->name?></h2>
     </a>
     <p>

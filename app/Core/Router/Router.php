@@ -5,8 +5,8 @@ namespace App\Core\Router;
 use App\Core\Application;
 use App\Core\Exception\NotFoundException;
 use App\Core\Middleware\MiddlewareStack;
-use App\Core\Request;
-use App\Core\Response;
+use App\Core\Request\Request;
+use App\Core\Response\Response;
 use ReflectionMethod;
 
 class Router implements IRouter

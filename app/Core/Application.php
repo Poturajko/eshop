@@ -4,14 +4,24 @@ namespace App\Core;
 
 
 use App\Core\Base\BaseController;
-use App\Core\Database\Connection;
 use App\Core\Middleware\MiddlewareStack;
+use App\Core\Request\IRequest;
+use App\Core\Request\Request;
+use App\Core\Request\RequestFactory;
+use App\Core\Response\IResponse;
+use App\Core\Response\Response;
+use App\Core\Response\ResponseFactory;
 use App\Core\Router\IRouter;
 use App\Core\Router\Router;
 use App\Core\Router\RouterFactory;
+use App\Core\Session\ISession;
+use App\Core\Session\Session;
+use App\Core\Session\SessionFactory;
+use App\Core\View\IView;
+use App\Core\View\View;
+use App\Core\View\ViewFactory;
 use App\Models\User;
 use Exception;
-use function DI\create;
 
 class Application
 {
@@ -19,10 +29,10 @@ class Application
     private static $layouts = 'main';
     public ?BaseController $controller;
     public IRouter $router;
-    private Request $request;
-    private Response $response;
-    public View $view;
-    public Session $session;
+    private IRequest $request;
+    private IResponse $response;
+    public IView $view;
+    public ISession $session;
     public ?User $user;
     private $userClass;
 
@@ -33,18 +43,18 @@ class Application
         $this->user = null;
         self::$app = $this;
         $this->middleware = new MiddlewareStack();
-        $this->response = new Response();
-        $this->request = new Request();
-        $this->router = (new RouterFactory($this->response, $this->request, $this->middleware))
-            ->create(Router::class);
-        $this->view = new View();
-        $this->session = new Session();
+        $this->response = (new ResponseFactory())->create(Response::class);
+        $this->request = (new RequestFactory())->create(Request::class);
+        $this->router = (new RouterFactory($this->response, $this->request, $this->middleware))->create(Router::class);
+        $this->view = (new ViewFactory())->create(View::class);
+        $this->session = (new SessionFactory())->create(Session::class);
 
         $this->userClass = $userClass;
         $userId = $this->session->get('user');
         if ($userId) {
             $this->user = $this->userClass->getRepo()->findOneBy(['id' => $userId]);
         }
+        $this->loadCoreFunctions();
     }
 
     public function addMiddleware(string $middleware)
@@ -66,49 +76,11 @@ class Application
 
     }
 
-    public function login(User $user): bool
+    public function loadCoreFunctions(): void
     {
-        $this->user = $user;
-        $this->session->set('user', $user->id);
-
-        return true;
-    }
-
-    public function logout(): bool
-    {
-        $this->session->delete('user');
-        $this->response->redirect('/');
-
-        return true;
-    }
-
-    public static function auth()
-    {
-        return self::$app->session->get('user');
-    }
-
-    public static function isGuest()
-    {
-        return !self::$app->user;
-    }
-
-    public static function isAdmin()
-    {
-        return self::$app->user->is_admin;
-    }
-
-    public static function routeActive(string $actionName): bool
-    {
-        foreach (Application::$app->controller as $item) {
-            if ($actionName === $item) {
-                return true;
-            }
+        foreach (glob(HELPERS_DIR . DS . 'functions' . DS . '*.php') as $filename) {
+            require_once $filename;
         }
-        return false;
     }
 
-    public static function cartIsEmpty()
-    {
-        return empty(self::$app->session->get('cart'));
-    }
 }

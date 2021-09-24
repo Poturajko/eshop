@@ -29,7 +29,7 @@
 
          <div id="navbar" class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
-                <?php if (\App\Core\Application::isAdmin()): ?>
+                <?php if (admin()): ?>
                    <li>
                       <a href="/admin/categories">Категории</a>
                    </li>
@@ -39,7 +39,7 @@
                 <?php endif; ?>
             </ul>
 
-             <?php if (\App\Core\Application::isGuest()): ?>
+             <?php if (guest()): ?>
                 <ul class="nav navbar-nav navbar-right">
                    <li class="nav-item">
                       <a class="nav-link" href="/login">Войти</a>
@@ -50,13 +50,17 @@
                 </ul>
              <?php endif; ?>
 
-             <?php if (\App\Core\Application::auth()): ?>
+             <?php if (auth()): ?>
                 <ul class="nav navbar-nav navbar-right">
                    <li class="nav-item dropdown">
                       <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button"
                          data-toggle="dropdown"
                          aria-haspopup="true" aria-expanded="false" v-pre>
-                         Администратор
+                         <?php if (admin()): ?>
+                              Администратор
+                          <?php else: ?>
+                              Кабинет
+                          <?php endif; ?>
                       </a>
 
                       <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">

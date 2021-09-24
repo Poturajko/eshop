@@ -11,7 +11,9 @@
       "ext-pdo": "*",
         "devcoder-xyz/php-dotenv": "^1.1",
         "php-di/php-di": "^6.3",
-      "ext-http": "*"
+        "phpmailer/phpmailer": "^6.5",
+      "ext-imap": "*",
+      "ext-fileinfo": "*"
     },
     "autoload": {
         "psr-4": {

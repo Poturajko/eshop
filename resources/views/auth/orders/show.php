@@ -23,7 +23,7 @@ $title = 'Заказ ' . $order->id;
                                 <td>
                                     <a href="/<?=$product->category()->code?>/<?=$product->id?>">
                                         <img height="56px"
-                                             src="#">
+                                             src="<?= url($product->image) ?>">
                                         <?= $product->name ?>
                                     </a>
                                 </td>

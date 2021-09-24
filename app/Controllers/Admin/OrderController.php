@@ -3,8 +3,6 @@
 namespace App\Controllers\Admin;
 
 use App\Core\Base\BaseController;
-use App\Core\Request;
-use App\Core\Response;
 use App\Models\Order;
 
 class OrderController extends BaseController

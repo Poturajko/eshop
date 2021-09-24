@@ -21,14 +21,14 @@ class Relation implements IRelation
     {
         $instance = new $related;
 
-        return $instance->getRepo()->findBy([], [$instance::FOREIGN_KEY => $this->parent->id]);
+        return $instance->getRepo()->findBy([], [$instance::FOREIGN_KEY => $this->parent->{$this->parent::PRIMARY_KEY}]);
     }
 
     public function belongsTo(string $related): object
     {
         $instance = new $related;
 
-        return $instance->getRepo()->findOneBy([$instance::PRIMARY_KEY => $this->parent->category_id]);
+        return $instance->getRepo()->findOneBy([$instance::PRIMARY_KEY => $this->parent->{$this->parent::FOREIGN_KEY}]);
     }
 
     public function belongsToMany(string $related): array
@@ -38,7 +38,7 @@ class Relation implements IRelation
         return $instance->getRepo()->findWithRelationship(
             $instance->attributes(), ['count'],
             $instance::PIVOT_TABLE_NAME, 'LEFT JOIN', $instance::FOREIGN_PIVOT_KEY,
-            ['order_id' => $this->parent->id],
+            ['order_id' => $this->parent->{$this->parent::PRIMARY_KEY}],
         );
     }
 }

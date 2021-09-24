@@ -8,14 +8,14 @@ class Cart
 {
     public function addProductToCart(int $id): void
     {
-        $productsInCart = Application::$app->session->get('cart');
+        $productsInCart = session()->get('cart');
         (array_key_exists($id, $productsInCart)) ? $productsInCart[$id]++ : $productsInCart[$id] = 1;
         $_SESSION['cart'] = $productsInCart;
     }
 
     public function removeProductInCart(int $id): bool
     {
-        $productsInCart = Application::$app->session->get('cart');
+        $productsInCart = session()->get('cart');
         if (array_key_exists($id, $productsInCart)) {
             $productsInCart[$id]--;
             if (empty($productsInCart[$id])) {
@@ -33,7 +33,7 @@ class Cart
 
     public function countItems(int $productId): int
     {
-        $productsInCart = Application::$app->session->get('cart');
+        $productsInCart = session()->get('cart');
         $product = [];
         foreach ($productsInCart as $id => $qnt) {
             if ($id === $productId) {
@@ -53,7 +53,7 @@ class Cart
 
     public function getFullSum(): int
     {
-        $productsInCart = Application::$app->session->get('cart');
+        $productsInCart = session()->get('cart');
         $ids = array_keys($productsInCart);
         $products = (new Product())->getRepo()->findByIds(['id' => $ids]);
 
@@ -63,6 +63,11 @@ class Cart
         }
 
         return (int)$sum;
+    }
+
+    public static function cartIsEmpty()
+    {
+        return empty(session()->get('cart'));
     }
 
 }

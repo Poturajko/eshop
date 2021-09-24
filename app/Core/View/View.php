@@ -1,10 +1,11 @@
 <?php
 
 
-namespace App\Core;
+namespace App\Core\View;
 
 
-class View
+
+class View implements IView
 {
     public string $title = '';
 
@@ -12,7 +13,7 @@ class View
     {
         extract($params, EXTR_OVERWRITE);
         ob_start();
-        require __DIR__ . "/../../resources/views/$view.php";
+        require BASE_DIR . DS . "resources/views/$view.php";
         return ob_get_clean();
     }
 
@@ -20,7 +21,7 @@ class View
     {
         $viewContent = $this->renderOnlyView($view, $params);
         ob_start();
-        include_once __DIR__ ."/../../resources/views/layouts/$layoutName.php";
+        include_once BASE_DIR . DS . "resources/views/layouts/$layoutName.php";
         $layoutContent = ob_get_clean();
         return str_replace('{{content}}', $viewContent, $layoutContent);
     }

@@ -3,9 +3,8 @@
 namespace App\Controllers\Admin;
 
 use App\Core\Base\BaseController;
-use App\Core\Request;
-use App\Core\Response;
-use App\Core\Storage;
+use App\Core\Request\Request;
+use App\Core\Storage\File;
 use App\Models\Category;
 
 class CategoryController extends BaseController
@@ -22,18 +21,19 @@ class CategoryController extends BaseController
         $this->render('auth', 'auth/categories/form');
     }
 
-    public function store(Request $request, Response $response)
+    public function store(Request $request)
     {
         $category = new Category();
         if ($request->isPost()) {
             $params = $request->getBody();
             unset($params['image']);
             if ($request->has('image')) {
-                $path = $request->file('image')->store('categories');
+                $file = new File($request->file('image'));
+                $path = $file->save('categories');
                 $params['image'] = $path;
             }
             $category->getRepo()->save($params);
-            $response->redirect('/admin/categories');
+            redirect('/admin/categories');
         }
     }
 
@@ -52,26 +52,34 @@ class CategoryController extends BaseController
 
     }
 
-    public function update(Request $request, Response $response, int $id)
+    public function update(Request $request, int $id)
     {
         $category = (new Category())->getRepo()->find($id);
 
         if ($request->isPost()) {
             $params = $request->getBody();
+            unset($params['image']);
             if ($request->has('image')) {
-                Storage::delete($category->image);
-                $path = $request->file('image')->store('products', true);
+                $file = new File($request->file('image'));
+                if (!is_null($category->image)) {
+                    $file->delete($category->image);
+                }
+                $path = $file->save('categories');
                 $params['image'] = $path;
             }
             $category->getRepo()->update($id, $params);
-            $response->redirect('/admin/categories');
+            redirect('/admin/categories');
         }
     }
 
-    public function destroy(Response $response, int $id)
+    public function destroy(int $id)
     {
-        (new Category())->getRepo()->findByIdAndDelete(['id' => $id]);
+        $category = (new Category())->getRepo()->find($id);
+        if (!is_null($category->image)) {
+            (new File())->delete($category->image);
+        }
+        $category->getRepo()->delete($category->id);
 
-        $response->redirect('/admin/categories');
+        redirect('/admin/categories');
     }
 }

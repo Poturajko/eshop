@@ -31,7 +31,7 @@ $this->title = 'Продукт ' . $product->name;
       </tr>
       <tr>
          <td>Картинка</td>
-         <td><img src="#" height="240px"></td>
+         <td><img src="<?=url($product->image)?>" height="240px"></td>
       </tr>
       <tr>
          <td>Категория</td>

@@ -3,7 +3,7 @@
 namespace App\Core\Orm\DataRepository;
 
 use App\Core\Orm\EntityManager\IEntityManager;
-use App\Core\Request;
+use App\Core\Request\Request;
 use InvalidArgumentException;
 use Throwable;
 
@@ -144,6 +144,16 @@ class DataRepository implements IDataRepository
         }
     }
 
+    public function delete(int $id): bool
+    {
+        $this->isEmpty($id);
+        try {
+            return $this->em->getCrud()->delete(['id' => $id]);
+        } catch (Throwable $throwable) {
+            throw $throwable;
+        }
+    }
+
     public function lastId(): int
     {
         return $this->em->getCrud()->lastId();
@@ -163,8 +173,12 @@ class DataRepository implements IDataRepository
             $parameters, $extras);
     }
 
-    public function findWithPaging(Request $request, int $limit = 9, array $conditions = [], array $selectors = []): ?array
-    {
+    public function findWithPaging(
+        Request $request,
+        int $limit = 9,
+        array $conditions = [],
+        array $selectors = []
+    ): ?array {
         $page = $request->getBody()['page'] ?: 1;
         $offset = ($page - 1) * $limit;
 
